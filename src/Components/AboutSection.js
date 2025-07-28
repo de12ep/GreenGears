@@ -1,6 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import handshake from '../images/handshake.png'
+import handshake from '../images/handshake.png';
 
 const AboutSection = () => {
   return (

@@ -1,17 +1,14 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from './Components/Navbar';
-import HeroSection from './Components/HeroSection';
-import FeatureCard from './Components/FeatureCard';
-import AboutSection from './Components/AboutSection';
-import HowItWorks from './Components/HowItWorks';
-import TopEquipments from './Components/TopEquipments';
 import Footer from './Components/Footer';
 import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/Loginpage';
 import AboutUs from './pages/AboutUs';
 import HowItWork from './pages/how-it-works';
+import LandingPage from './pages/LandingPage';
 //import UploadEquipmentPage from './pages/UploadEquipment';
+//import AllEquipments from './pages/EquipmentListPage'
 
 
 function App() {
@@ -24,16 +21,12 @@ function App() {
           path="/"
           element={
             <>
-              <HeroSection />
-              <FeatureCard />
-              <AboutSection />
-              <HowItWorks />
-              <TopEquipments />
+             <LandingPage />
               <Footer />
             </>
           }
         />
-        
+         
         {/* Other page */}
         <Route path="/how-it-works" element={<HowItWork />} />
         <Route path="/signup" element={<SignupPage />} />
