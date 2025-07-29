@@ -1,8 +1,10 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import tractor from '../images/tractorHeroSection.jpg';
-
+import { useNavigate } from 'react-router-dom';
+ 
 const HeroSection = () => {
+   const navigate = useNavigate();
   const sectionStyle = {
     backgroundImage: `url(${tractor})` ,
     
@@ -15,7 +17,9 @@ const HeroSection = () => {
     padding: '40px 20px',
   };
 
-
+const searchEquipment = ()=>{
+   navigate('/AllEquipments')
+}
 
   return (
     <div style={sectionStyle}>
@@ -29,6 +33,7 @@ const HeroSection = () => {
             Effortlessly access top agricultural and industrial equipment with GreenGear. <br></br>
              Join us in shaping the future!
           </p>
+          <button  onClick={searchEquipment} className="btn btn-light mt-3 fw-semibold px-4 py-2">See All Equipments</button>
         </div>
       </div>
     </div>

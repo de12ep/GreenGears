@@ -1,17 +1,25 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:9191";
+import axiosInstance from "./axiosInstance";
 
 class EquipmentService {
-  getAllEquipment = async () => {
-    const response = await axios.get(`${API_URL}/ms2/equipment`);
-    return response.data.data;
+  Signin = async (data) => {
+    const res = await axiosInstance.post("/user/signin", data);
+    return res.data; // { token, role }
   };
 
-  Signin = async (data) => {
-    const response = await axios.post(`${API_URL}/user/signin`, data);
-    return response.data;
+  getAllEquipment = async () => {
+    const res = await axiosInstance.get("/ms2/equipment");
+    return res;
+  };
+
+  uploadEquipment = async (data) => {
+    const res = await axiosInstance.post("/ms2/equipment", data);
+    return res;
+  };
+
+  deleteEquipment = async (id) => {
+    const res = await axiosInstance.delete(`/ms2/equipment/${id}`);
+    return res;
   };
 }
 
-export default  new EquipmentService();
+export default new EquipmentService();

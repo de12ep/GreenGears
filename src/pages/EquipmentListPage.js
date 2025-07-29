@@ -1,33 +1,41 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from "axios";
+import EquipmentService from "../Services/EquipmentService";
 import Footer from "../Components/Footer";
-import EquipmentService from '../Services/EquipmentService'
+import { useNavigate } from "react-router-dom";
 
 const EquipmentListPage = () => {
   const [equipments, setEquipments] = useState([]);
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
 
+  const navigate = useNavigate();
+
   useEffect(() => {
-    const equipData =  fetchData();
-    console.log(equipData.data);
-   setEquipments(...equipData.data);
+    fetchData();
+  }, []);
 
-    }, []);
+  const fetchData = async () => {
+    try {
+      const Equipmentdata = await EquipmentService.getAllEquipment();
+      setEquipments(Equipmentdata);
+    } catch (error) {
+      console.error("Error fetching equipment:", error);
+    }
+  };
 
- const fetchData = async ()=>{
-     const Equipmentdata =await EquipmentService.getAllEquipment();
-     return Equipmentdata;
- }
+  const filteredEquipments = equipments.filter((item) => {
+    const matchesCategory =
+      filter === "All" ? true : item.category === filter;
+    const matchesSearch = item.location
+      .toLowerCase()
+      .includes(search.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
-  const filteredEquipments = equipments
-    .filter((item) =>
-      filter === "All" ? true : item.category === filter
-    )
-    .filter((item) =>
-      item.location.toLowerCase().includes(search.toLowerCase())
-    );
+  const handleCardClick = (id) => {
+    navigate(`/equipment/${id}`);
+  };
 
   return (
     <>
@@ -65,7 +73,12 @@ const EquipmentListPage = () => {
         {/* Equipment Cards */}
         <div className="row g-4">
           {filteredEquipments.map((item) => (
-            <div className="col-sm-6 col-md-4 col-lg-3" key={item.id}>
+            <div
+              className="col-sm-6 col-md-4 col-lg-3"
+              key={item.id}
+              style={{ cursor: "pointer" }}
+              onClick={() => handleCardClick(item.id)}
+            >
               <div className="card border-0 shadow-lg h-100">
                 <img
                   src={item.imageUrl}
@@ -77,7 +90,6 @@ const EquipmentListPage = () => {
                   <h5 className="fw-bold">{item.name}</h5>
                   <p className="text-muted mb-1">📍 {item.location}</p>
                   <p className="text-muted mb-1">Capacity: {item.capacity}</p>
-                  <p className="text-muted mb-2">Booking Type: Manual</p>
                   <h5 className="text-success mb-3">
                     ${item.pricePerDay}/Day
                   </h5>
@@ -101,3 +113,4 @@ const EquipmentListPage = () => {
 };
 
 export default EquipmentListPage;
+ 

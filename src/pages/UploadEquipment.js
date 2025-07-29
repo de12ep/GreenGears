@@ -85,19 +85,7 @@ export default function UploadEquipmentPage() {
             />
           </div>
 
-          {/* Availability */}
-          <div className="col-md-6 d-flex align-items-center">
-            <div className="form-check mt-3">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="availability"
-                checked={formData.availability}
-                onChange={handleChange}
-              />
-              <label className="form-check-label">Available</label>
-            </div>
-          </div>
+        
 
           {/* Description */}
           <div className="col-12">
@@ -111,6 +99,19 @@ export default function UploadEquipmentPage() {
               placeholder="Enter details about the equipment"
               required
             ></textarea>
+          </div>
+            {/* Availability */}
+          <div className="col-md-6 d-flex align-items-center">
+            <div className="form-check mt-3">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                name="availability"
+                checked={formData.availability}
+                onChange={handleChange}
+              />
+              <label className="form-check-label">Available</label>
+            </div>
           </div>
 
           {/* Submit Button */}

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import bgImage from "../images/login2.jpg"; // your background image
-import { getAllEquipment } from "../Services/EquipmentService";
-
+import EquipmentService from "../Services/EquipmentService";
+import { useNavigate } from 'react-router-dom';  
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
+const navigate = useNavigate();
   const [fadeIn, setFadeIn] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -59,11 +59,22 @@ const LoginPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    
-    alert("Login Successful!");
+     
+    try {
+      const res = await EquipmentService.Signin(formData);
+      localStorage.setItem("token", res.token);
+      localStorage.setItem("role", res.role);
+
+      if (res.role === "owner") navigate("/owner");
+      else navigate("/renter");
+    } catch (err) {
+      alert("Invalid credentials");
+    }
   };
+
+ 
 
   return (
     <div style={pageStyle}>
