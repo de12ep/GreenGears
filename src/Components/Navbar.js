@@ -1,39 +1,62 @@
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './Navbar.css'; // optional for extra styles
-import { Link } from 'react-router-dom';
-//import SignupPage from '../pages/SignupPage';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-const Navbar = () => {
+const Navbar = ({ user, setUser }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // remove JWT token
+    setUser(null);
+    navigate("/login");
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm px-3">
-      <Link className="navbar-brand fw-bold text-success" to="/">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light px-3">
+      <Link className="navbar-brand" to="/">
         GreenGear
       </Link>
 
-      <button
-        className="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-      >
-        <span className="navbar-toggler-icon"></span>
-      </button>
-
-      <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul className="navbar-nav">
-          <li className="nav-item mx-2">
-            <Link className="nav-link" to="/about">About Us</Link>
-          </li>
-          <li className="nav-item mx-2">
-            <Link className="nav-link" to="/how-it-works">How it works</Link>
-          </li>
-          <li className="nav-item mx-2">
-            <Link to="/login" className="btn btn-outline-success me-2 hover-btn">Login</Link>
-          </li>
-          <li className="nav-item mx-2">
-            <Link className=" btn btn-outline-success me-2 hover-btn" to="/signup">Signup</Link>
-          </li>
+      <div className="collapse navbar-collapse">
+        <ul className="navbar-nav ms-auto">
+          {!user ? (
+            <>
+              <li className="nav-item">
+                <Link to="/login" className="btn btn-outline-primary me-2">
+                  Login
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/signup" className="btn btn-primary">
+                  Signup
+                </Link>
+              </li>
+            </>
+          ) : (
+            <>
+              <li className="nav-item me-3">
+                <Link to="/profile" className="btn btn-light d-flex align-items-center">
+                  <img
+                    src={user.profilePic || "/default-avatar.png"}
+                    alt="Profile"
+                    style={{
+                      width: 35,
+                      height: 35,
+                      borderRadius: "50%",
+                      marginRight: 8,
+                      objectFit: "cover",
+                    }}
+                  />
+                  {user.userName}
+                </Link>
+              </li>
+              <li className="nav-item">
+                <button onClick={handleLogout} className="btn btn-danger">
+                  Logout
+                </button>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </nav>
