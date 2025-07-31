@@ -64,10 +64,10 @@ const navigate = useNavigate();
      
     try {
       const res = await EquipmentService.Signin(formData);
-      localStorage.setItem("jwt", res.token);
+      localStorage.setItem("jwt", res.jwt);
       localStorage.setItem("role", res.role);
 
-      if (res.role === "owner") navigate("/owner");
+      if (res.role === "OWNER") navigate("/owner");
       else navigate("/renter");
     } catch (err) {
       alert("Invalid credentials");

@@ -7,14 +7,14 @@ import LoginPage from './pages/Loginpage';
 import AboutUs from './pages/AboutUs';
 import HowItWork from './pages/how-it-works';
 import LandingPage from './pages/LandingPage';
-import UploadEquipmentPage from './pages/UploadEquipment';
+
 
 import OwnerDashboard from "./pages/OwnerDashboard";
 import RenterDashboard from "./pages/RenterDashboard";
 import { PrivateRoute } from "./Components/PrivateRoutes";
 import AllEquipments from './pages/EquipmentListPage'
 import EquipmentDetailsPage from './pages/EquipmentDetailPage';
-
+import UploadEquipment from "./pages/UploadEquipment";
 
 function App() {
   return (
@@ -37,26 +37,28 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
          <Route path="/login" element={<LoginPage />} />
          <Route path="/about" element={<AboutUs />} />
+         <Route path="/uploadequipment" element={<UploadEquipment />} />
           <Route path="/login" element={<LoginPage />} />
          <Route path="/AllEquipments" element={<AllEquipments />} />
            <Route path="/equipment/:id" element={<EquipmentDetailsPage />} />
+           <Route
+          path="/renter"
+          element={
+            <PrivateRoute allowedRole="RENTER">
+              <RenterDashboard />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/owner"
           element={
-            <PrivateRoute allowedRole="owner">
+            <PrivateRoute allowedRole="OWNER">
               <OwnerDashboard />
             </PrivateRoute>
           }
         />
 
-        <Route
-          path="/renter"
-          element={
-            <PrivateRoute allowedRole="renter">
-              <RenterDashboard />
-            </PrivateRoute>
-          }
-        />
+        
       </Routes>
     </Router>
   );

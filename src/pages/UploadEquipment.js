@@ -1,127 +1,162 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import EquipmentService from "../Services/EquipmentService";
 
-export default function UploadEquipmentPage() {
-  const [formData, setFormData] = useState({
+import { useNavigate } from 'react-router-dom';
+
+const AddProduct = () => {
+  const [product, setProduct] = useState({
     name: "",
-    pricePerDay: "",
-    availability: false,
-    location: "",
     description: "",
-    image: null,
+    pricePerDay: "",
+    category: "",
+    location: "",
+   availability: false,
   });
+  const navigate = useNavigate();
+  const [image, setImage] = useState(null);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
-    if (type === "file") {
-      setFormData({ ...formData, image: files[0] });
-    } else if (type === "checkbox") {
-      setFormData({ ...formData, [name]: checked });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProduct({ ...product, [name]: value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Uploaded Data:", formData); // Later connect to backend
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+    // setProduct({...product, image: e.target.files[0]})
   };
+
+  const submitHandler = async(event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("image", image);
+    formData.append( "dto", new Blob([JSON.stringify(product)], { type: "application/json" }));
+
+       await EquipmentService.uploadEquipment(formData);
+        navigate("/owner")
+  }
+
+   
 
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
-      <div className="container bg-white p-4 rounded shadow" style={{ maxWidth: "650px" }}>
-        <h2 className="text-center mb-4 text-success">Upload Equipment</h2>
-        <form onSubmit={handleSubmit} className="row g-3">
-
-          {/* Image Upload */}
-          <div className="col-12">
-            <label className="form-label">Upload Image</label>
-            <input
-              type="file"
-              className="form-control"
-              name="image"
-              accept="image/*"
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          {/* Name */}
-          <div className="col-md-6">
-            <label className="form-label">Equipment Name</label>
-            <input
-              type="text"
-              className="form-control"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          {/* Price */}
-          <div className="col-md-6">
-            <label className="form-label">Price Per Day (₹)</label>
-            <input
-              type="number"
-              className="form-control"
-              name="pricePerDay"
-              value={formData.pricePerDay}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          {/* Location */}
-          <div className="col-md-6">
-            <label className="form-label">Location</label>
-            <input
-              type="text"
-              className="form-control"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
+    <div className="container">
+    <div className="center-container">
+      <form className="row g-3 pt-5" onSubmit={submitHandler}>
+        <div className="col-md-6">
+          <label className="form-label">
+            <h6>Name</h6>
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Product Name"
+            onChange={handleInputChange}
+            value={product.name}
+            name="name"
+          />
+        </div>
         
+        <div className="col-12">
+          <label className="form-label">
+            <h6>Description</h6>
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Add product description"
+            value={product.description}
+            name="description"
+            onChange={handleInputChange}
+            id="description"
+          />
+        </div>
+        <div className="col-5">
+          <label className="form-label">
+            <h6>pricePerDay</h6>
+          </label>
+          <input
+            type="number"
+            className="form-control"
+            placeholder="Eg: $1000"
+            onChange={handleInputChange}
+            value={product.pricePerDay}
+            name="pricePerDay"
+            id="pricePerDay"
+          />
+        </div>
+     
+           <div className="col-md-6">
+          <label className="form-label">
+            <h6>Category</h6>
+          </label>
+          <select
+            className="form-select"
+            value={product.category}
+            onChange={handleInputChange}
+            name="category"
+            id="category"
+          >
+            <option value="">Select category</option>
+            <option value="Tractor">Tractor</option>
+            <option value="Attachment">Attachment</option>
+            <option value="Utitly">Utitly</option>
+            
+          </select>
+        </div>
+         <div className="col-md-6">
+          <label className="form-label">
+            <h6>location</h6>
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="location Name"
+            onChange={handleInputChange}
+            value={product.location}
+            name="location"
+          />
+        </div>
 
-          {/* Description */}
-          <div className="col-12">
-            <label className="form-label">Description</label>
-            <textarea
-              className="form-control"
-              name="description"
-              rows="3"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Enter details about the equipment"
-              required
-            ></textarea>
+        {/* <input className='image-control' type="file" name='file' onChange={(e) => setProduct({...product, image: e.target.files[0]})} />
+    <button className="btn btn-primary" >Add Photo</button>  */}
+        <div className="col-md-4">
+          <label className="form-label">
+            <h6>Image</h6>
+          </label>
+          <input
+            className="form-control"
+            type="file"
+            onChange={handleImageChange}
+          />
+        </div>
+        <div className="col-12">
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              name="availability"
+              id="gridCheck"
+              checked={product.availability}
+              onChange={(e) =>
+                setProduct({ ...product, availability: e.target.checked })
+              }
+            />
+            <label className="form-check-label">availability</label>
           </div>
-            {/* Availability */}
-          <div className="col-md-6 d-flex align-items-center">
-            <div className="form-check mt-3">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="availability"
-                checked={formData.availability}
-                onChange={handleChange}
-              />
-              <label className="form-check-label">Available</label>
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <div className="col-12 text-center">
-            <button type="submit" className="btn btn-success px-5">
-              Upload
-            </button>
-          </div>
-        </form>
-      </div>
+        </div>
+        <div className="col-12">
+          <button
+            type="submit"
+            className="btn btn-primary"
+            // onClick={submitHandler}
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
     </div>
   );
-}
+};
+export default AddProduct;
+

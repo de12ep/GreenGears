@@ -10,9 +10,20 @@ class EquipmentService {
     const res = await axiosInstance.get("/ms2/equipment");
     return res;
   };
+   getAllOwnerEquipment = async () => {
+    const res = await axiosInstance.get(`/ms2/equipment/myequipment`);
+    return res;
+  };
 
   uploadEquipment = async (data) => {
-    const res = await axiosInstance.post("/ms2/equipment", data);
+    console.log(data); 
+    
+
+    const res = await axiosInstance.post(`/ms2/equipment/Tractor`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     return res;
   };
 
