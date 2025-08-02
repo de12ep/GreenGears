@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import bgImage from "../images/signup.jpg";
-
+import EquipmentService from "../Services/EquipmentService"; // Adjust the import path as necessary
+import { useNavigate } from 'react-router-dom';  
 const SignupPage = () => {
   const [formData, setFormData] = useState({
     userName: "",
     email: "",
     password: "",
     phone: "",
-    role: "owner",
+    role: "RENTER",
     city: "",
     state: "",
     dateOfBirth: "",
     isVerified: false,
   });
-
+const navigate = useNavigate();
   const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {
     setFadeIn(true); // Trigger fade-in animation on load
+
   }, []);
 
   const pageStyle = {
@@ -73,10 +75,11 @@ const SignupPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     console.log("Signup Data:", formData);
-    alert("Signup Successful!");
+    await EquipmentService.SignUp(formData)
+navigate("/login"); // Redirect to login page after successful signup
   };
 
   return (
@@ -159,8 +162,8 @@ const SignupPage = () => {
                 value={formData.role}
                 onChange={handleChange}
               >
-                <option value="owner">Owner</option>
-                <option value="renter">Renter</option>
+                <option value="OWNER">Owner</option>
+                <option value="RENTER">Renter</option>
               </select>
             </div>
 

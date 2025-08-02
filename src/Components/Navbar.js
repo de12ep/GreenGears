@@ -7,17 +7,34 @@ const Navbar = ({ user, setUser }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user");
     setUser(null);
     navigate("/login");
   };
 
+  const handleBrandClick = () => {
+   
+     navigate("/");
+  };
+
+  const goToDashboard = () => {
+    if (user?.role === "OWNER") navigate("/owner");
+    else if (user?.role === "RENTER") navigate("/renter");
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light px-3">
-      <Link className="navbar-brand fw-bold " to="/">GreenGear</Link> {/* ✅ Bold Brand */}
+      <span
+        className="navbar-brand fw-bold"
+        style={{ cursor: "pointer" }}
+        onClick={handleBrandClick}
+      >
+        GreenGear
+      </span>
 
       <div className="collapse navbar-collapse">
         <ul className="navbar-nav ms-auto align-items-center">
-          {/* ✅ Always visible links on RIGHT */}
           <li className="nav-item me-3">
             <Link className="nav-link" to="/about">About Us</Link>
           </li>
@@ -25,7 +42,6 @@ const Navbar = ({ user, setUser }) => {
             <Link className="nav-link" to="/how-it-works">How It Works</Link>
           </li>
 
-          {/* ✅ Auth Buttons */}
           {!user ? (
             <>
               <li className="nav-item">
@@ -38,7 +54,7 @@ const Navbar = ({ user, setUser }) => {
           ) : (
             <>
               <li className="nav-item me-3">
-                <Link to="/profile" className="btn btn-light d-flex align-items-center">
+                
                   <img
                     src={user.profilePic || "/default-avatar.png"}
                     alt="Profile"
@@ -46,12 +62,19 @@ const Navbar = ({ user, setUser }) => {
                       width: 35,
                       height: 35,
                       borderRadius: "50%",
-                      marginRight: 8
+                      marginRight: 8,
                     }}
                   />
                   {user.userName}
-                </Link>
+                
               </li>
+
+              <li className="nav-item me-2">
+                <button onClick={goToDashboard} className="btn btn-outline-primary">
+                  Go to Dashboard
+                </button>
+              </li>
+
               <li className="nav-item">
                 <button onClick={handleLogout} className="btn btn-danger">
                   Logout

@@ -1,20 +1,48 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import bgImage from "../images/login2.jpg"; // your background image
+import bgImage from "../images/login2.jpg";
 import EquipmentService from "../Services/EquipmentService";
-import { useNavigate } from 'react-router-dom';  
-const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-const navigate = useNavigate();
+import { useNavigate, useLocation } from 'react-router-dom'; // ✅ added useLocation
+
+const LoginPage = ({ setUser }) => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
+  const location = useLocation(); // ✅ get location object
   const [fadeIn, setFadeIn] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+
+  // ✅ Get the previous path or default to "/"
+  const from = location.state?.from?.pathname || "/";
 
   useEffect(() => {
     setFadeIn(true);
   }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await EquipmentService.Signin(formData);
+      localStorage.setItem("token", res.jwt);
+      localStorage.setItem("role", res.role);
+
+      const userRes = await EquipmentService.getCurrentUser(res.jwt);
+      localStorage.setItem("user", JSON.stringify(userRes));
+      setUser(userRes);
+
+      alert("Login successful");
+
+      // ✅ Redirect back to the previous page
+      navigate(from, { replace: true });
+
+    } catch (err) {
+      console.error("Login failed", err);
+      alert("Invalid credentials");
+    }
+  };
 
   const pageStyle = {
     backgroundImage: `url(${bgImage})`,
@@ -28,11 +56,11 @@ const navigate = useNavigate();
   };
 
   const formStyle = {
-    background: "rgba(255, 255, 255, 0.6)", // ✅ 60% transparent
+    background: "rgba(255, 255, 255, 0.6)",
     backdropFilter: "blur(6px)",
     padding: "30px",
     borderRadius: "15px",
-    width: "350px", // ✅ Smaller width
+    width: "350px",
     boxShadow: "0px 4px 15px rgba(0,0,0,0.3)",
     opacity: fadeIn ? 1 : 0,
     transform: fadeIn ? "translateY(0px)" : "translateY(30px)",
@@ -44,7 +72,7 @@ const navigate = useNavigate();
     border: "none",
     fontWeight: "bold",
     width: "100%",
-    padding: "8px", // ✅ Smaller button
+    padding: "8px",
     borderRadius: "8px",
     transition: "all 0.3s ease",
   };
@@ -55,62 +83,19 @@ const navigate = useNavigate();
     transform: "scale(1.03)",
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async(e) => {
-    e.preventDefault();
-     
-    try {
-      const res = await EquipmentService.Signin(formData);
-      localStorage.setItem("jwt", res.jwt);
-      localStorage.setItem("role", res.role);
-
-      if (res.role === "OWNER") navigate("/owner");
-      else navigate("/renter");
-    } catch (err) {
-      alert("Invalid credentials");
-    }
-  };
-
- 
-
   return (
     <div style={pageStyle}>
       <div style={formStyle}>
-        <h3 className="text-center mb-4 ">Welcome Back</h3>
+        <h3 className="text-center mb-4">Welcome Back</h3>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="email" className="form-label fw-semibold">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="form-control"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+            <label htmlFor="email" className="form-label fw-semibold">Email</label>
+            <input type="email" id="email" className="form-control" name="email" value={formData.email} onChange={handleChange} required />
           </div>
-
           <div className="mb-3">
-            <label htmlFor="password" className="form-label fw-semibold">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="form-control"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+            <label htmlFor="password" className="form-label fw-semibold">Password</label>
+            <input type="password" id="password" className="form-control" name="password" value={formData.password} onChange={handleChange} required />
           </div>
-
           <button
             type="submit"
             style={isHovered ? buttonHoverStyle : buttonStyle}

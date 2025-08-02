@@ -3,11 +3,28 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import Footer from "../Components/Footer";
 import EquipmentService from '../Services/EquipmentService'
-
+import { useNavigate } from "react-router-dom";
 const EquipmentListPage = () => {
   const [equipments, setEquipments] = useState([]);
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+
+const bookequip=(item)=>{
+    const role = localStorage.getItem("role");
+    if (!role) {
+      alert("You must be logged in to book equipment.");
+      navigate("/login");
+      return;
+    }
+    if (role !== "RENTER") {
+      alert("You must be a Renter to book equipment.");
+      return;
+    }
+
+    navigate(`/equipment/${item.id}`, { state: { equipdata: item } } );
+  }
+
   useEffect(() => {
   const fetchImageBlob = async (id) => {
     const response = await fetch(`http://localhost:9191/ms2/equipment/${id}/image`, {
@@ -17,6 +34,8 @@ const EquipmentListPage = () => {
     const blob = await response.blob();
     return URL.createObjectURL(blob);
   };
+  
+ 
 
   const loadImages = async () => {
     const equipmentList = await EquipmentService.getAllEquipment();
@@ -87,7 +106,7 @@ const EquipmentListPage = () => {
                   <h5 className="text-success mb-3">
                     ${item.pricePerDay}/Day
                   </h5>
-                  <button className="btn btn-success w-100">Book</button>
+                  <button className="btn btn-success w-100"      onClick={()=>bookequip(item)}  >Book</button>
                 </div>
               </div>
             </div>
